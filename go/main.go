@@ -32,7 +32,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 
 	var createdAt *time.Time
 
-	if err := db.QueryRow("select created_at from test").Scan(&createdAt); err != nil {
+	if err := db.QueryRow("select now() as created_at from dual").Scan(&createdAt); err != nil {
 		fmt.Println(err)
 	}
 

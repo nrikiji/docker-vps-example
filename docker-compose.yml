@@ -40,10 +40,6 @@ services:
         tag: db/{{.Name}}/{{.ID}}
     environment:
       TZ: Asia/Tokyo
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - db-data:/var/lib/mysql
       - ./db/initdb.d:/docker-entrypoint-initdb.d
@@ -73,7 +69,7 @@ services:
     environment:
       TZ: Asia/Tokyo
       MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_USER: xx
+      MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     build: ./go
     healthcheck:
