@@ -1,0 +1,94 @@
+version: '3.7'
+
+services:
+  autoheal:
+    restart: always
+    image: willfarrell/autoheal
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: nginx/{{.Name}}/{{.ID}}
+    environment:
+      # STAGE: 'production' # Don't use production until staging works
+      DOMAINS: >-
+        ${WEB_HOST1} -> http://go:8080,
+        ${WEB_HOST2} -> http://front:8080,
+      ERROR_LOG: stdout
+      ACCESS_LOG: stderr
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+    networks:
+      - backend
+      - frontend
+  db:
+    image: mariadb:10.5.9
+    container_name: db
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: db/{{.Name}}/{{.ID}}
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: mysqladmin -uroot -p${MYSQL_ROOT_PASSWORD} ping || exit 1
+    networks:
+      - backend
+  front:
+    build: ./front
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    environment:
+      - NGINX_PORT=8080
+    networks:
+      - frontend
+  # nginx:
+  #   image: nginx:latest
+  #   volumes:
+  #     - ./nginx/templates:/etc/nginx/templates
+  #   healthcheck:
+  #     test: curl --fail http://nginx:8080/ || exit 1
+  #   environment:
+  #     - NGINX_PORT=8080
+  #   networks:
+  #     - frontend
+  go:
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: xx
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    build: ./go
+    healthcheck:
+      test: curl --fail http://go:8080/ || exit 1
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: go/{{.Name}}/{{.ID}}
+    networks:
+      - backend
+volumes:
+  db-data:
+  https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
+  
+networks:
+  frontend:
+  backend:
