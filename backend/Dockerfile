@@ -10,6 +10,4 @@ RUN go build -o main .
 
 EXPOSE 80
 
-# HEALTHCHECK CMD curl --fail http://localhost:8080/ || exit 1
-
 CMD ["./main"]

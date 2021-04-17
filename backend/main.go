@@ -22,6 +22,10 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	dbUser := os.Getenv("MYSQL_USER")
 	dbPass := os.Getenv("MYSQL_PASSWORD")
 
+	log.Println(dbHost)
+	log.Println(dbUser)
+	log.Println(dbPass)
+
 	log.Println("START hello")
 
 	db, err := sql.Open("mysql", dbUser+":"+dbPass+"@tcp("+dbHost+":3306)/test?parseTime=true")
@@ -53,5 +57,5 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", hello)
 	handler := cors.Default().Handler(mux)
-	http.ListenAndServe(":8080", handler)
+	http.ListenAndServe(":80", handler)
 }

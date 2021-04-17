@@ -17,12 +17,13 @@ services:
       driver: syslog
       options:
         syslog-facility: daemon
-        tag: nginx/{{.Name}}/{{.ID}}
+        tag: proxy/{{.Name}}/{{.ID}}
     environment:
       # STAGE: 'production' # Don't use production until staging works
       DOMAINS: >-
-        ${WEB_HOST1} -> http://go:8080,
-        ${WEB_HOST2} -> http://front:8080,
+        ${STATIC_WEB_HOST} -> http://static,
+        ${BACKEND_WEB_HOST} -> http://backend,
+        ${FRONTEND_WEB_HOST} -> http://frontend,
       ERROR_LOG: stdout
       ACCESS_LOG: stderr
     volumes:
@@ -42,43 +43,39 @@ services:
       TZ: Asia/Tokyo
     volumes:
       - db-data:/var/lib/mysql
-      - ./db/initdb.d:/docker-entrypoint-initdb.d
     healthcheck:
       test: mysqladmin -uroot -p${MYSQL_ROOT_PASSWORD} ping || exit 1
     networks:
       - backend
-  front:
-    build: ./front
-    volumes:
-      - ./nginx/templates:/etc/nginx/templates
-    environment:
-      - NGINX_PORT=8080
+  frontend:
+    build: ./frontend
     networks:
       - frontend
-  # nginx:
-  #   image: nginx:latest
-  #   volumes:
-  #     - ./nginx/templates:/etc/nginx/templates
-  #   healthcheck:
-  #     test: curl --fail http://nginx:8080/ || exit 1
-  #   environment:
-  #     - NGINX_PORT=8080
-  #   networks:
-  #     - frontend
-  go:
+  static:
+    image: nginx:latest
+    healthcheck:
+      test: curl --fail http://static/ || exit 1
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: static/{{.Name}}/{{.ID}}
+    networks:
+      - frontend
+  backend:
     environment:
       TZ: Asia/Tokyo
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    build: ./go
+    build: ./backend
     healthcheck:
-      test: curl --fail http://go:8080/ || exit 1
+      test: curl --fail http://backend/ || exit 1
     logging:
       driver: syslog
       options:
         syslog-facility: daemon
-        tag: go/{{.Name}}/{{.ID}}
+        tag: backend/{{.Name}}/{{.ID}}
     networks:
       - backend
 volumes:
