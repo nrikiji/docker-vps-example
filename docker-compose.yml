@@ -2,14 +2,15 @@ version: '3.7'
 
 services:
   autoheal:
-    restart: always
     image: willfarrell/autoheal
+    restart: always
     environment:
       - AUTOHEAL_CONTAINER_LABEL=all
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock  
   https-portal:
     image: steveltn/https-portal:1
+    restart: always
     ports:
       - '80:80'
       - '443:443'
@@ -33,6 +34,7 @@ services:
       - frontend
   db:
     image: mariadb:10.5.9
+    restart: always
     container_name: db
     logging:
       driver: syslog
@@ -49,10 +51,12 @@ services:
       - backend
   frontend:
     build: ./frontend
+    restart: always
     networks:
       - frontend
   static:
     image: nginx:latest
+    restart: always
     healthcheck:
       test: curl --fail http://static/ || exit 1
     logging:
@@ -63,12 +67,13 @@ services:
     networks:
       - frontend
   backend:
+    build: ./backend
+    restart: always
     environment:
       TZ: Asia/Tokyo
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    build: ./backend
     healthcheck:
       test: curl --fail http://backend/ || exit 1
     logging:
