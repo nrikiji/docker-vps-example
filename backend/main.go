@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 	"time"
-    "os"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/rs/cors"
@@ -21,10 +21,6 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	dbHost := os.Getenv("MYSQL_HOST")
 	dbUser := os.Getenv("MYSQL_USER")
 	dbPass := os.Getenv("MYSQL_PASSWORD")
-
-	log.Println(dbHost)
-	log.Println(dbUser)
-	log.Println(dbPass)
 
 	log.Println("START hello")
 
