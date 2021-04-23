@@ -3,6 +3,8 @@
 ### 起動(docker-compose.ymlがあるディレクトリ で)
 ```
 $ docker-compose up
+or
+$ docker-compose up --build
 ```
 
 ### 環境変数
