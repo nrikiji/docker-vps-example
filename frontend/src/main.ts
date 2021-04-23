@@ -1,7 +1,10 @@
-import axios from "../node_modules/axios/index";
+import axios from "axios";
 
 function main() {
-  axios.get("https://backend.example.com/").then((x) => console.log(x.data));
+  const elm = document.getElementById("content");
+  axios
+    .get(process.env.API_URL)
+    .then((x) => (elm.innerHTML = x.data["CreatedAt"]));
 }
 
 main();
