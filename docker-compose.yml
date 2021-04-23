@@ -18,7 +18,7 @@ services:
       driver: syslog
       options:
         syslog-facility: daemon
-        tag: proxy/{{.Name}}/{{.ID}}
+        tag: docker_proxy/{{.Name}}/{{.ID}}
     environment:
       # STAGE: 'production' # Don't use production until staging works
       DOMAINS: >-
@@ -40,9 +40,12 @@ services:
       driver: syslog
       options:
         syslog-facility: daemon
-        tag: db/{{.Name}}/{{.ID}}
+        tag: docker_db/{{.Name}}/{{.ID}}
     environment:
       TZ: Asia/Tokyo
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
@@ -52,6 +55,11 @@ services:
   frontend:
     build: ./frontend
     restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: docker_frontend/{{.Name}}/{{.ID}}
     networks:
       - frontend
   static:
@@ -63,7 +71,7 @@ services:
       driver: syslog
       options:
         syslog-facility: daemon
-        tag: static/{{.Name}}/{{.ID}}
+        tag: docker_static/{{.Name}}/{{.ID}}
     networks:
       - frontend
   backend:
@@ -80,7 +88,7 @@ services:
       driver: syslog
       options:
         syslog-facility: daemon
-        tag: backend/{{.Name}}/{{.ID}}
+        tag: docker_backend/{{.Name}}/{{.ID}}
     networks:
       - backend
 volumes:
