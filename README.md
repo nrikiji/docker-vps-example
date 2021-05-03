@@ -1,6 +1,6 @@
 # VPS + DockerでWebサービス
 
-・SSL対応とリバースプロキシは [https-portal](https://github.com/SteveLTN/https-portal) にまかせる  
+・SSL(Let's Encrypt)対応とリバースプロキシは [https-portal](https://github.com/SteveLTN/https-portal) にまかせる  
 
 ・コンテナの監視はswarmで、アプリの監視は [docker-autoheal](https://github.com/willfarrell/docker-autoheal) にまかせる  
 
