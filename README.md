@@ -1,7 +1,9 @@
 # VPS + DockerでWebサービス
 
 ・SSL対応とリバースプロキシは [https-portal](https://github.com/SteveLTN/https-portal) にまかせる  
+
 ・コンテナの監視はswarmで、アプリの監視は [docker-autoheal](https://github.com/willfarrell/docker-autoheal) にまかせる  
+
 ・ホスト1台でswarmモードを使用  
 ※swarmモードをする理由はコンテナのローリングアップデートがしたかったため  
 ※swarmモードを使用しない場合は[こちら](README_NOSWARM.md)(コンテナのローリングアップデートができない)  
