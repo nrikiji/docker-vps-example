@@ -13,26 +13,32 @@ import (
 	"github.com/rs/cors"
 )
 
+var Db *sql.DB
+
 type Test struct {
 	CreatedAt *time.Time
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
+func init() {
 	dbHost := os.Getenv("MYSQL_HOST")
 	dbUser := os.Getenv("MYSQL_USER")
-	dbPass := os.Getenv("MYSQL_PASSWORD")
 
-	log.Println("START hello")
+	dbPass := os.Getenv("MYSQL_PASSWORD")
 
 	db, err := sql.Open("mysql", dbUser+":"+dbPass+"@tcp("+dbHost+":3306)/test?parseTime=true")
 	if err != nil {
 		fmt.Println(err)
 	}
-	defer db.Close()
+	Db = db
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+
+	log.Println("START hello")
 
 	var createdAt *time.Time
 
-	if err := db.QueryRow("select now() as created_at from dual").Scan(&createdAt); err != nil {
+	if err := Db.QueryRow("select now() as created_at from dual").Scan(&createdAt); err != nil {
 		fmt.Println(err)
 	}
 
