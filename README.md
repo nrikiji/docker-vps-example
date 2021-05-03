@@ -16,7 +16,7 @@ $ docker build -t backend -f ./backend/Dockerfile ./backend
 $ docker build -t frontend -f ./frontend/Dockerfile ./frontend
 
 # 起動
-$ docker stack deploy -c <(docker-compose -f docker-compose-stack.yaml --env-file .env config) app
+$ docker stack deploy -c <(docker-compose -f docker-compose.yaml --env-file .env config) app
 ```
 
 ### アプリのアップデート(backendの場合)

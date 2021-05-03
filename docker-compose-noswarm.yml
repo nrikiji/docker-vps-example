@@ -3,12 +3,14 @@ version: '3.7'
 services:
   autoheal:
     image: willfarrell/autoheal
+    restart: always
     environment:
       - AUTOHEAL_CONTAINER_LABEL=all
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock  
   https-portal:
     image: steveltn/https-portal:1
+    restart: always
     ports:
       - '80:80'
       - '443:443'
@@ -27,64 +29,13 @@ services:
       ACCESS_LOG: stderr
     volumes:
       - https-portal-data:/var/lib/https-portal
-    # TODO: docker-compose -f docker-compose.yml --env-file .env config がリストにならないのでバグる
-    #     : https://github.com/docker/compose/issues/7773
-    # depends_on:
-    #   - frontend
-    #   - backend
-    networks:
-      - frontend
-      - backend
-  static:
-    image: nginx:1.20.0
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: daemon
-        tag: docker_static/{{.Name}}/{{.ID}}
-    healthcheck:
-      test: curl --fail http://localhost/ || exit 1
-    networks:
-      - frontend
-  frontend:
-    image: frontend:latest
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 1
-        delay: 10s
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: daemon
-        tag: docker_frontend/{{.Name}}/{{.ID}}
-    healthcheck:
-      test: curl --fail http://localhost/ || exit 1
-    networks:
-      - frontend
-  backend:
-    image: backend:latest
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 1
-        delay: 10s
-    environment:
-      TZ: Asia/Tokyo
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    healthcheck:
-      test: curl --fail http://localhost/ || exit 1
-    logging:
-      driver: syslog
-      options:
-        syslog-facility: daemon
-        tag: docker_backend/{{.Name}}/{{.ID}}
     networks:
       - backend
+      - frontend
   db:
     image: mariadb:10.5.9
+    restart: always
+    container_name: db
     logging:
       driver: syslog
       options:
@@ -104,10 +55,49 @@ services:
       test: mysqladmin -uroot -p${MYSQL_ROOT_PASSWORD} ping || exit 1
     networks:
       - backend
+  frontend:
+    build: ./frontend
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: docker_frontend/{{.Name}}/{{.ID}}
+    networks:
+      - frontend
+  static:
+    image: nginx:latest
+    restart: always
+    healthcheck:
+      test: curl --fail http://static/ || exit 1
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: docker_static/{{.Name}}/{{.ID}}
+    networks:
+      - frontend
+  backend:
+    build: ./backend
+    restart: always
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test: curl --fail http://backend/ || exit 1
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: docker_backend/{{.Name}}/{{.ID}}
+    networks:
+      - backend
 volumes:
   db-data:
   https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
-
+  
 networks:
   frontend:
   backend:

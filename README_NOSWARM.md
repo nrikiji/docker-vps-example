@@ -2,9 +2,9 @@
 
 ### 起動(docker-compose.ymlがあるディレクトリ で)
 ```
-$ docker-compose up
+$ docker-compose -f docker-compose-noswarm.yml up
 or
-$ docker-compose up --build
+$ docker-compose -f docker-compose-noswarm.yml up --build
 ```
 
 ### 環境変数
