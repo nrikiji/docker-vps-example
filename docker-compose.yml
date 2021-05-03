@@ -46,8 +46,11 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: test
     volumes:
       - db-data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./db/initizlize.sql:/docker-entrypoint-initdb.d/initizlize.sql
     healthcheck:
       test: mysqladmin -uroot -p${MYSQL_ROOT_PASSWORD} ping || exit 1
     networks:
