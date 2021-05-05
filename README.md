@@ -8,6 +8,10 @@
 ※swarmモードをする理由はコンテナのローリングアップデートがしたかったため  
 ※swarmモードを使用しない場合は[こちら](README_NOSWARM.md)(コンテナのローリングアップデートができない)  
 
+・検証環境  
+Ubuntu 20.04.2  
+Docker 20.10.6  
+
 ### setup
 ```
 $ docker swarm init
