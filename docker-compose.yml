@@ -71,9 +71,6 @@ services:
         delay: 10s
     environment:
       TZ: Asia/Tokyo
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     healthcheck:
       test: curl --fail http://localhost/ || exit 1
     logging:
