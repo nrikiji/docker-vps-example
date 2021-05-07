@@ -20,6 +20,7 @@ $ docker swarm init
 ### 起動(docker-compose.ymlがあるディレクトリで)
 ```
 # アプリのイメージ作成
+$ docker build -t batch -f ./batch/Dockerfile ./batch
 $ docker build -t backend -f ./backend/Dockerfile ./backend
 $ docker build -t frontend -f ./frontend/Dockerfile ./frontend
 
