@@ -57,4 +57,4 @@ $ systemctl restart rsyslog
 ```
 
 ### アーキテクチャ
-![Untitled (17)](https://user-images.githubusercontent.com/4780752/115259625-03ab5780-a16d-11eb-8c27-ca6844e49507.png)
+![Untitled (17)](https://user-images.githubusercontent.com/4780752/117397400-052f9a80-af37-11eb-8275-c5c97059105a.png)
