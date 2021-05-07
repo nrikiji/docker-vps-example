@@ -94,6 +94,16 @@ services:
         tag: docker_backend/{{.Name}}/{{.ID}}
     networks:
       - backend
+  batch:
+    build: ./batch
+    restart: always
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: docker_batch/{{.Name}}/{{.ID}}
+    networks:
+      - backend
 volumes:
   db-data:
   https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL

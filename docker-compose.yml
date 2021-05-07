@@ -83,6 +83,15 @@ services:
         tag: docker_backend/{{.Name}}/{{.ID}}
     networks:
       - backend
+  batch:
+    image: batch:latest
+    logging:
+      driver: syslog
+      options:
+        syslog-facility: daemon
+        tag: docker_batch/{{.Name}}/{{.ID}}
+    networks:
+      - backend
   db:
     image: mariadb:10.5.9
     logging:
