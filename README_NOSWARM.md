@@ -1,4 +1,4 @@
-# VPS + DockerでWebサービス
+# VPS + DockerでWebサービス + バッチ(cron)
 
 ### 起動(docker-compose.ymlがあるディレクトリ で)
 ```
