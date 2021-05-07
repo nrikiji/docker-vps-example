@@ -1,4 +1,4 @@
-# VPS + DockerでWebサービス
+# VPS + DockerでWebサービス + バッチ(cron)
 
 ・SSL(Let's Encrypt)対応とリバースプロキシは [https-portal](https://github.com/SteveLTN/https-portal) にまかせる  
 
